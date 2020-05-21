@@ -1,0 +1,280 @@
+---
+title: "Exploring the BRFSS data"
+output: 
+  html_document: 
+    fig_height: 4
+    highlight: pygments
+    theme: spacelab
+---
+
+## Author: 
+Kristen Phan
+
+## Setup
+
+This R markdown file performs exploratory data analysis (EDA) on a dataset called "Behavioral Risk Factor Surveillance System" (BRFSS) provided jointly by the CDC and sets it up for further analysis to answer 3 research questions outlined below.  
+
+The Behavioral Risk Factor Surveillance System (BRFSS) is a collaborative project between all of the states in the United States (US) and participating US territories and the Centers for Disease Control and Prevention (CDC). The BRFSS is administered and supported by CDC’s Population Health Surveillance Branch, under the Division of Population Health at the National Center for Chronic Disease Prevention and Health Promotion. BRFSS is an ongoing surveillance system designed to measure behavioral risk factors for the non-institutionalized adult population (18 years of age and older) residing in the US. 
+The BRFSS was initiated in 1984, with 15 states collecting surveillance data on risk behaviors through monthly telephone interviews. Over time, the number of states participating in the survey increased; by 2001, 50 states, the District of Columbia, Puerto Rico, Guam, and the US Virgin Islands were participating in the BRFSS. Today, all 50 states, the District of Columbia, Puerto Rico, and Guam collect data annually and American Samoa, Federated States of Micronesia, and Palau collect survey data over a limited point- in-time (usually one to three months). In this document, the term “state” is used to refer to all areas participating in BRFSS, including the District of Columbia, Guam, and the Commonwealth of Puerto Rico.
+
+The BRFSS objective is to collect uniform, state-specific data on preventive health practices and risk behaviors that are linked to chronic diseases, injuries, and preventable infectious diseases that affect the adult population. Factors assessed by the BRFSS in 2013 include tobacco use, HIV/AIDS knowledge and prevention, exercise, immunization, health status, healthy days — health-related quality of life, health care access, inadequate sleep, hypertension awareness, cholesterol awareness, chronic health conditions, alcohol consumption, fruits and vegetables consumption, arthritis burden, and seatbelt use. 
+
+Since 2011, BRFSS conducts both landline telephone- and cellular telephone-based surveys. In conducting the BRFSS landline telephone survey, interviewers collect data from a randomly selected adult in a household. In conducting the cellular telephone version of the BRFSS questionnaire, interviewers collect data from an adult who participates by using a cellular telephone and resides in a private residence or college housing.
+
+Health characteristics estimated from the BRFSS pertain to the non-institutionalized adult population, aged 18 years or older, who reside in the US. In 2013, additional question sets were included as optional modules to provide a measure for several childhood health and wellness indicators, including asthma prevalence for people aged 17 years or younger.
+
+Source: https://d3c33hcgiwev3.cloudfront.net/_e34476fda339107329fc316d1f98e042_brfss_codebook.html?Expires=1590192000&Signature=G~dZbm4Uv5ZwU7bzmV7-2ept33hAUXHUX7uVZQR2ogVPdMaMqMJIv5p3vyW29rDPuyYdPyrUuiEM8xO8nSidktjrsNEZpTcxoJzLCDxGjr6dSX8~FgD--td3OwKSvJH3Y8Y9ppTO1Kp8h8pw1XKizXIG3H7n4CSmeuGrCsWGNRU_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A
+
+### Load packages
+
+```{r load-packages, message = FALSE}
+library(ggplot2)
+library(dplyr)
+```
+
+### Load data
+
+```{r load-data}
+load("brfss2013.RData")
+```
+
+
+
+* * *
+
+## Part 1: Data
+
+There are three observations that we can draw from the way the data was collected. 
+
+1. Observatonal Data and Correlations:
+Because this is an observational study and not an experiment, observations about relationships between different behavioral risk factors (e.g. tobacco use, HIV/AIDS knowledge and prevention, exercise, immunization, health status, etc) indicate correlations and not causations.
+
+2. Random Sampling and Non-response Bias:
+The interviewers collected data from a randomly selected adult in a household. However, it was no indication of the response rate, signalling that the dataset might contain 'non-response' sampling bias.
+
+3. Representative Sample:
+All U.S. states and territories were participating in the survey, which signals that if the sampling bias discussed above is neglible, the data collected is representative of the U.S. non-institutionalized adult population, aged 18 years or older, who reside in the US.
+
+
+
+* * *
+
+## Part 2: Research questions
+
+**Research quesion 1:**
+
+Objective: Examine the correlation between physical activity (measured by the number of mininutes or hours doing physical exercises) and mental health (measures by the number of days full of energy and datas depressed in the past 30 days). 
+
+Input variables:
+- qlhlth2: How Many Days Full Of Energy In Past 30 Days (364 obs excl. NA and 0)
+- qlmentl2: How Many Days Depressed In Past 30 Days
+- exerhmm1: Minutes Or Hours Walking, Running, Jogging, Or Swimming
+- exerhmm2: Minutes Or Hours Walking, Running, Jogging, Or Swimming
+
+
+
+**Research quesion 2:**
+
+Objective: Examine the correlation between veterans' perception toward mental health treatment and their satisfaction with life
+
+Input variables:
+- veteran3: Are You A Veteran ("Yes", "No", ...)
+- mistrhlp: Mental Health Treatment Can Help People Lead Normal Life (1-5 with 1 = agree strongly, 5 = disagree strongly)
+- lsatisfy: Satisfaction With Life (1-4 with 1 = very satisfied, 4 = very disatisfied)
+
+
+
+
+**Research quesion 3:**
+
+Objective: Examine the relationship between mental health, emotional support received, and political engagement
+
+Input variables:
+- menthlth: Number Of Days Mental Health Not Good
+- emtsuprt: How Often Get Emotional Support Needed
+- scntvot1: Did You Vote In The Last Presidential Election?
+
+
+* * *
+
+## Part 3: Exploratory data analysis
+
+NOTE: Insert code chunks as needed by clicking on the "Insert a new code chunk" 
+button (green button with orange arrow) above. Make sure that your code is visible
+in the project you submit. Delete this note when before you submit your work.
+
+**Research quesion 1:**
+
+Objective: Examine the correlation between physical activity (measured by the number of mininutes or hours doing physical exercises) and mental health (measures by the number of days full of energy and datas depressed in the past 30 days). 
+
+
+Input variables:
+- qlhlth2: How Many Days Full Of Energy In Past 30 Days (364 obs excl. NA and 0)
+- qlmentl2: How Many Days Depressed In Past 30 Days
+- exerhmm1: Minutes Or Hours Walking, Running, Jogging, Or Swimming
+- exerhmm2: Minutes Or Hours Walking, Running, Jogging, Or Swimming
+
+
+First, we will filter out the 4 target measures (number of days full of energy, days depressed, and mins or hours of physical exercises)
+
+```{r filter-data}
+brfss2013_q1 <- brfss2013 %>%
+            select(exerhmm1, exerhmm2, qlhlth2, qlmentl2)
+str(brfss2013_q1)
+```
+
+Next, we will filter out incomplete records which have at least one NA in one of the four columns of the dataframe 'brfss2013_q1'.
+
+```{r filter-missing-records}
+brfss2013_q1 <- brfss2013_q1 %>%
+            filter(!is.na(qlhlth2), !is.na(qlmentl2), !is.na(exerhmm1), !is.na(exerhmm2))
+str(brfss2013_q1)
+```
+
+For each of the 140 observations we obtained, we will compute the total number of miniutes spent on physical exercise. 
+
+```{r calculate-exercise-time}
+brfss2013_q1 <- brfss2013_q1 %>%
+            mutate(exercise_time = exerhmm1 + exerhmm2) %>%
+            select(exercise_time, qlhlth2, qlmentl2)
+str(brfss2013_q1)
+```
+
+
+Now let's plot the exercise time observed in our sample. The plot is right skewed.
+
+
+```{r plot-exercise-time}
+qplot(brfss2013_q1$exercise_time, xlab = "exercise time (in minutes)", ylab = "count (in persons)", geom="histogram") 
+
+```
+
+
+Next, we will rank each individual's exercise time as low, medium, high, or very high depending on the actual exercise time
+- low threshold: exercise_time < quantiile 1 - the bottom 25% of the sample should meet the 'low' threshold
+- medium threshold: quantile 1 <= exercise_time < median
+- high threshold: median <= exercise_time < quantile 3 
+- very high threshold: excercise_time >= quantile 3 - the top 25% of the sample should meet the 'very high' threshold 
+
+```{r calculate-thresholds}
+time_mean <- mean(brfss2013_q1$exercise_time)
+time_sd <- sd(brfss2013_q1$exercise_time)
+q1 <- round(qnorm(0.25, time_mean, time_sd), digits = 0)
+med <- round(qnorm(0.50, time_mean, time_sd), digits = 0)
+q3 <- round(qnorm(0.75, time_mean, time_sd), digits = 0)
+print(paste("q1 =", q1))
+print(paste("med =", med))
+print(paste("q3 =", q3))
+```
+
+Now let's rank exercise times!
+
+```{r rank-exercise-times}
+brfss2013_q1 <- brfss2013_q1 %>%
+          mutate(exercise_time_rank = ifelse(exercise_time < q1, "low", 
+                                      ifelse(exercise_time >= q1 & exercise_time < med, "medium", 
+                                      ifelse(exercise_time >= med & exercise_time < q3, "high","very high"))))
+brfss2013_q1 %>%
+    group_by(exercise_time_rank) %>%
+    summarise(count = n())
+str(brfss2013_q1)
+print("days_depressed statistics:") 
+summary(brfss2013_q1$qlmentl2)
+```
+
+
+Lastly, we will calculate the average number of days when the respondents report having full energy and the average number of days the respondents report feeling depressed for each group with different rankings in exercise time. 
+
+```{r calculate-avg-days-full-energy-and-days-feeling-depressed}
+brfss2013_q1 %>%
+    group_by(exercise_time_rank) %>%
+    summarise(avg_days_full_energy = median(qlhlth2), avg_days_depressed = median(qlmentl2))
+
+```
+
+The analysis suggests a positive correlation between the amount of exercise time the respondents engaged in and the number of days when they reported having full energy in the last 30 days. 
+
+There were some outliners with a high number of days the respondents reported feeling depreessed. But at least 50% of the respondents reported 0 days of depression regardless of the level of exercise they engaged in.  
+
+
+**Research quesion 2:**
+
+Objective: Examine the correlation between veterans' perception toward mental health treatment and their satisfaction with life
+
+Input variables:
+- veteran3: Are You A Veteran ("Yes", "No", ...)
+- mistrhlp: Mental Health Treatment Can Help People Lead Normal Life (1-5 with 1 = agree strongly, 5 = disagree strongly)
+- lsatisfy: Satisfaction With Life (1-4 with 1 = very satisfied, 4 = very disatisfied)
+
+First, we filter records of respondents who are veterans and along with their perception toward mental health treatment and satisfaction with life
+
+```{r filter-veteran-records}
+
+brfss2013_q2 <- brfss2013 %>% filter(veteran3 == "Yes", !is.na(employ1), !is.na(mistrhlp), 
+                                     !is.na(mistrhlp), !is.na(lsatisfy)) %>%
+                              select(menthlth_treatment_perception = mistrhlp, 
+                                     life_satisfaction = lsatisfy)
+summary(brfss2013_q2)
+```
+
+
+Now we calculate the average (mean) life satisfaction measure among all respondents and among the veteran respondents with different perceptions toward mental health treatment.
+
+```{r calcuate-average-mean-life-satisfaction}
+
+national_lsatis <- brfss2013$lsatisfy[!is.na(brfss2013$lsatisfy)]
+national_lsatis_avg <- mean(unclass(national_lsatis))
+national_lsatis_avg
+results <- brfss2013_q2 %>% group_by(menthlth_treatment_perception) %>%
+                            summarise(vet_lsatis_avg = mean(unclass(life_satisfaction)))
+
+results <- results %>% mutate(national_lsatis_avg = national_lsatis_avg,  
+                              higher_lsatis_than_national_avg = ifelse(vet_lsatis_avg < national_lsatis_avg, 
+                                                                "yes", "no"))
+results
+```
+
+```{r plot}
+plot(unclass(results$menthlth_treatment_perception), results$vet_lsatis_avg, xlab = "mental_health_treatment_perception (1 = agree strongly, 5 = disagree strongly)", ylab = "life satisfaction (1 = very satisfied, 4 = very disatisfied)", pch = 19, col="blue")
+```
+
+
+The results indicate a positive correlattion between positive perception toward mental health treatment and positive life satisfication reported among veteran respondents. 
+
+Additionally, veteran respondents who agree that mental health treatment leads to a normal life have a higher average life satisfaction rate than the national rate. 
+
+
+
+**Research quesion 3:**
+
+Objective: Examine the relationship between mental health, emotional support received, and political engagement
+
+Input variables:
+- menthlth: Number Of Days Mental Health Not Good in the past 30 days (0-30, NA)
+- emtsuprt: How Often Get Emotional Support Needed (1-5, 1=Always, 5=Never, NA)
+- scntvot1: Did You Vote In The Last Presidential Election? (1=Yes, 2=No, 8=Not Applicable, NA)
+
+First, we filter out records that have complete information on mental health statust, emotional support received, and voting record (yes/no)
+```{r filter-missing-data}
+brfss2013_q3 <- brfss2013 %>% filter(!is.na(menthlth), !is.na(emtsuprt), !is.na(scntvot1), scntvot1 != 8) %>% 
+                  select(voted = scntvot1, days_bad_mental_health = menthlth, emotional_support_received = emtsuprt)
+summary(brfss2013_q3)
+```
+
+Now we take a closer look at the mental health status and emotional support received by the respondents who did and did not vote in the last election
+
+```{r polical-engagement-vs-days-with-bad-mental-health}
+brfss2013_q3 %>% group_by(voted) %>%
+                  summarise(avg_days_bad_mental_health = mean(days_bad_mental_health))
+```
+
+```{r polical-engagement-vs-emotional-support-received}
+#  (smaller = support received more often)
+brfss2013_q3 %>% group_by(voted) %>%
+                summarise("emotional_support_received (smaller = support received more often)" = mean(unclass(emotional_support_received)))
+```
+
+The results show a positive correlation between mental health (measured by days with bad mental health), emotional support received (how often an individual receives the emotional support s/he needs), and political engagement (whether the individual voted in the last election). The more mentally health and support emotional support a person receives, the more s/he is likely to engage politically through voting.   
+
+
+
