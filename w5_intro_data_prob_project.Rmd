@@ -46,16 +46,11 @@ load("brfss2013.RData")
 
 There are three observations that we can draw from the way the data was collected. 
 
-1. Observatonal Data and Correlations:
+1. Causality:
 Because this is an observational study and not an experiment, observations about relationships between different behavioral risk factors (e.g. tobacco use, HIV/AIDS knowledge and prevention, exercise, immunization, health status, etc) indicate correlations and not causations.
 
 2. Random Sampling and Non-response Bias:
-The interviewers collected data from a randomly selected adult in a household. However, it was no indication of the response rate, signalling that the dataset might contain 'non-response' sampling bias.
-
-3. Representative Sample:
-All U.S. states and territories were participating in the survey, which signals that if the sampling bias discussed above is neglible, the data collected is representative of the U.S. non-institutionalized adult population, aged 18 years or older, who reside in the US.
-
-
+The interviewers collected data from a randomly selected adult in a household in all U.S. states and territories. However, because there was no indication of the response rate, the generalizability of this study is limited due to possible non-response sampling bias.
 
 * * *
 
